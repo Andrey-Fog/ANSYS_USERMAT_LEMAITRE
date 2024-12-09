@@ -11,25 +11,18 @@
      &                   cutFactor, pVolDer, hrmflg, var3, var4,
      &                   var5, var6, var7)
 c*************************************************************************
-c     *** primary function ***
 с     If you using this code for research or industrial purposes please cite:
 с           Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
-с                 "Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
-с
-c     Add to preprocessor /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 è YES
-c           user defined material constitutive model
+с           "Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
+c     Preprocessor definitions for intel fortran compiler:
+c      /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 è YES
 c
 c      Attention:
 c           User must define material constitutive law properly
 c           according to the stress state such as 3D, plane strain
 c           and axisymmetry, plane stress and beam.
 c
-c           a 3D material constitutive model can use for
-c           plane strain and axisymmetry cases.
-c
-c           When using shell elements, a plane stress algorithm
-c           must be use.
-c
+c      Based on the algorithm developed by Eduardo de Souza Neto
 c*************************************************************************     
 !DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT"::usermat  
 
@@ -140,7 +133,7 @@ c ***    1d beam example
           
      
 !DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT3D"::usermat3d 
-
+c     *** primary function ***
 c
 c     input arguments
 c     ===============
@@ -286,22 +279,6 @@ c
      &                 )
      
 c *** primary function ***
-c
-c user defined material constitutive model
-c
-c Attention:
-c     User must define material constitutive law properly
-c     according to the stress state such as 3D, plane strain 
-c     and axisymmetry, plane stress and 3D/1D beam.
-c
-c     A 3D material constitutive model can be used for
-c     plane strain and axisymmetry cases.
-c
-c     When using shell elements, a plane stress algorithm
-c     must be used. At this time is not realized
-c
-c     Based on the algorithm implemented in the FORTRAN program
-c     developed by De Souza Neto et al. (2008)[5]
 c
 c --- local variables
 c
