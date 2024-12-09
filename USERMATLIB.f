@@ -546,6 +546,7 @@ c     Lode angle
 c     multuaxial state
            LimSurfVal=NLCnst+(1-NLCnst)*(cn2*6/3.14)**NLPwr     
        ENDIF
+c     yeld surface radius
       sigy0 = sigy0/LimSurfVal
 c
 c *** elastic trial true stress
