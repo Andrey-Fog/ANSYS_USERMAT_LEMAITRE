@@ -1,74 +1,3 @@
-            SUBROUTINE obrat(N,A,C)
-            ! input ...
-            ! a(n,n) - array of coefficients for matrix A
-            ! n      - dimension
-            ! output ...
-            ! c(n,n) - inverse matrix of A
-            ! comments ...
-            ! the original matrix a(n,n) will be destroyed 
-            ! during the calculation
-            !===========================================================
-            implicit none 
-            integer n
-            double precision A(n,n), C(n,n), OOO(n,2*n), lkl(n,2*n) 
-            double precision ll,tt, gaus(n,2*n)
-            integer i, j, pp, kk, kl
-                  gaus = 0.0d0
-                  do i = 1, N
-                      do j = 1, N
-                          gaus(i,j) = A(i,j)
-                      end do
-                  end do
-                  do i=1, N
-                      gaus(i,i+N) = 1.0d0
-                  end do
-                  OOO = gaus
-                  do i = 1,N
-                      lkl = OOO
-                      kl = i+1
-                      If(OOO(i,i).EQ.0.0d0) then
-                          do while (OOO(i,i).EQ.0.0d0)
-                              kl = kl
-                          do j = 1, 2*N
-                              OOO(i,j) = lkl(kl,j)
-                              OOO(kl,j) = lkl(i,j)
-                          end do
-                          If(OOO(i,i).EQ.0.0d0) then
-                              OOO = lkl
-                          end if    
-                          kl = kl +1
-                          end do
-                      end if    
-                      tt = OOO(i,i)
-                      do pp = 1, 2*N
-                         OOO(i,pp) = OOO(i,pp)/tt 
-                      end do   
-                      do kk = 1,N-i
-                          ll = OOO(kk+i,i)
-                          do j = 1,2*N
-                              OOO(kk+i,j) = OOO(kk+i,j)-OOO(i,j)*ll
-                          end do
-                      end do
-                  end do   
-c          обратный ход
-                  do i = -N,-1
-                      tt = OOO(-i,-i)
-                      do pp = 1, 2*N
-                         OOO(-i,pp) = OOO(-i,pp)/tt 
-                      end do   
-                      do kk = i+1, -1
-                          ll = OOO(-kk,-i)
-                          do j = 1,2*N
-                              OOO(-kk,j) = OOO(-kk,j)-OOO(-i,j)*ll
-                          end do
-                      end do
-                  end do   
-                  do i=1,N
-                      do j=1,N
-                          C(i,j) = OOO(i,j+N)
-                      end do
-                  end do    
-            end subroutine obrat
 *deck,usermat      USERDISTRIB  parallel                                gal
       subroutine usermat(
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
@@ -81,7 +10,27 @@ c          обратный ход
      &                   tsstif, epsZZ,
      &                   cutFactor, pVolDer, hrmflg, var3, var4,
      &                   var5, var6, var7)
-     
+c*************************************************************************
+c     *** primary function ***
+СЃ     If you using this code for research or industrial purposes please cite:
+СЃ           Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
+СЃ                 "Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
+СЃ
+c     Add to preprocessor /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 ГЁ YES
+c           user defined material constitutive model
+c
+c      Attention:
+c           User must define material constitutive law properly
+c           according to the stress state such as 3D, plane strain
+c           and axisymmetry, plane stress and beam.
+c
+c           a 3D material constitutive model can use for
+c           plane strain and axisymmetry cases.
+c
+c           When using shell elements, a plane stress algorithm
+c           must be use.
+c
+c*************************************************************************     
 !DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT"::usermat  
 
 #include "impcom.inc"
@@ -175,84 +124,7 @@ c ***    1d beam example
       END IF
       return
       end
-*deck,usermat1d    USERDISTRIB  parallel                                gal
-      subroutine usermat1d(
-     &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
-     &                   ldstep,isubst,keycut,
-     &                   nDirect,nShear,ncomp,nStatev,nProp,
-     &                   Time,dTime,Temp,dTemp,
-     &                   stress,ustatev,dsdePl,sedEl,sedPl,epseq,
-     &                   Strain,dStrain, epsPl, prop, coords, 
-     &                   var0, defGrad_t, defGrad,
-     &                   tsstif, epsZZ, cutFactor, 
-     &                   var1, var2, var3, var4, var5,
-     &                   var6, var7)
-!DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT1D"::usermat1d 
-#include "impcom.inc"
-c
-      INTEGER          
-     &                 matId, elemId,
-     &                 kDomIntPt, kLayer, kSectPt,
-     &                 ldstep,isubst,keycut,
-     &                 nDirect,nShear,ncomp,nStatev,nProp
-      DOUBLE PRECISION 
-     &                 Time,    dTime,   Temp,    dTemp,
-     &                 sedEl,   sedPl,   epseq,   epsZZ,   cutFactor
-      DOUBLE PRECISION 
-     &                 stress  (ncomp  ), ustatev (nStatev),
-     &                 dsdePl  (ncomp,ncomp),
-     &                 Strain  (ncomp  ), dStrain (ncomp  ), 
-     &                 epsPl   (ncomp  ), prop    (nProp  ), 
-     &                 coords  (3),
-     &                 defGrad (3,3),     defGrad_t(3,3),
-     &                 tsstif  (2)
-c
-c***************** User defined part *************************************
-c
-c --- parameters
-c
-      INTEGER          mcomp
-      DOUBLE PRECISION ZERO, HALF, ONE, TWO, SMALL
-      PARAMETER       (ZERO       = 0.d0,
-     &                 HALF       = 0.5d0,
-     &                 ONE        = 1.d0,
-     &                 TWO        = 2.d0,
-     &                 SMALL      = 1.d-08,
-     &                 mcomp      = 1
-     &                 )
-c
-c --- local variables
-c
-c      sigElp   (dp,ar(6  ),l)            trial stress
-c      dsdeEl   (dp,ar(6,6),l)            elastic moduli
-c      sigDev   (dp,ar(6  ),l)            deviatoric stress tensor
-c      dfds     (dp,ar(6  ),l)            derivative of the yield function 
-c      JM       (dp,ar(6,6),l)            2D matrix for a 4 order tensor
-c      pEl      (dp,sc     ,l)            hydrostatic pressure stress
-c      qEl      (dp,sc     ,l)            von-mises stress
-c      pleq_t   (dp,sc     ,l)            equivalent plastic strain at beginnig of time increment
-c      pleq     (dp,sc     ,l)            equivalent plastic strain at end of time increment
-c      dpleq    (dp,sc     ,l)            incremental equivalent plastic strain
-c      sigy_t   (dp,sc     ,l)            yield stress at beginnig of time increments
-c      sigy     (dp,sc     ,l)            yield stress at end of time increment
-c      young    (dp,sc     ,l)            Young's modulus
-c      posn     (dp,sc     ,l)            Poiss's ratio
-c      sigy0    (dp,sc     ,l)            initial yield stress
-c      dsigdep  (dp,sc     ,l)            plastic slop
-c      twoG     (dp,sc     ,l)            two time of shear moduli
-c
-c
-      DOUBLE PRECISION sigElp(mcomp), dsdeEl(mcomp,mcomp)
 
-      DOUBLE PRECISION var0, var1, var2, var3, var4, var5,
-     &                 var6, var7
-
-      DOUBLE PRECISION qEl,   pleq_t,  sigy_t , sigy,
-     &                 dpleq, pleq,    signTens,
-     &                 young, posn,    sigy0,   dsigdep, 
-     &                 twoG,  fratio, prpr
-      return
-      end
 *deck,usermat3d    USERDISTRIB  parallel                                gal
       subroutine usermat3d(
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
@@ -268,29 +140,7 @@ c
           
      
 !DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT3D"::usermat3d 
-c*************************************************************************
-c     *** primary function ***
-c     Add to preprocessor /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 и YES
-c           user defined material constitutive model
-c
-c      Attention:
-c           User must define material constitutive law properly
-c           according to the stress state such as 3D, plane strain
-c           and axisymmetry, plane stress and beam.
-c
-c           a 3D material constitutive model can use for
-c           plane strain and axisymmetry cases.
-c
-c           When using shell elements, a plane stress algorithm
-c           must be use.
-c
-c                                             gal July, 1999
-c
-c       The following demonstrates a USERMAT subroutine for
-c       a plasticity model of 3D solid elements or plane elements
-c       in plane strain or axisymmetric stress state. 
-c
-c*************************************************************************
+
 c
 c     input arguments
 c     ===============
@@ -1209,6 +1059,85 @@ c      ustatev(15) = zero
       ustatev(7) = LimSurfVal
       return    
       end
+      
+*deck,usermat1d    USERDISTRIB  parallel                                gal
+      subroutine usermat1d(
+     &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
+     &                   ldstep,isubst,keycut,
+     &                   nDirect,nShear,ncomp,nStatev,nProp,
+     &                   Time,dTime,Temp,dTemp,
+     &                   stress,ustatev,dsdePl,sedEl,sedPl,epseq,
+     &                   Strain,dStrain, epsPl, prop, coords, 
+     &                   var0, defGrad_t, defGrad,
+     &                   tsstif, epsZZ, cutFactor, 
+     &                   var1, var2, var3, var4, var5,
+     &                   var6, var7)
+!DEC$ ATTRIBUTES DLLEXPORT, ALIAS:"USERMAT1D"::usermat1d 
+#include "impcom.inc"
+c
+      INTEGER          
+     &                 matId, elemId,
+     &                 kDomIntPt, kLayer, kSectPt,
+     &                 ldstep,isubst,keycut,
+     &                 nDirect,nShear,ncomp,nStatev,nProp
+      DOUBLE PRECISION 
+     &                 Time,    dTime,   Temp,    dTemp,
+     &                 sedEl,   sedPl,   epseq,   epsZZ,   cutFactor
+      DOUBLE PRECISION 
+     &                 stress  (ncomp  ), ustatev (nStatev),
+     &                 dsdePl  (ncomp,ncomp),
+     &                 Strain  (ncomp  ), dStrain (ncomp  ), 
+     &                 epsPl   (ncomp  ), prop    (nProp  ), 
+     &                 coords  (3),
+     &                 defGrad (3,3),     defGrad_t(3,3),
+     &                 tsstif  (2)
+c
+c***************** User defined part *************************************
+c
+c --- parameters
+c
+      INTEGER          mcomp
+      DOUBLE PRECISION ZERO, HALF, ONE, TWO, SMALL
+      PARAMETER       (ZERO       = 0.d0,
+     &                 HALF       = 0.5d0,
+     &                 ONE        = 1.d0,
+     &                 TWO        = 2.d0,
+     &                 SMALL      = 1.d-08,
+     &                 mcomp      = 1
+     &                 )
+c
+c --- local variables
+c
+c      sigElp   (dp,ar(6  ),l)            trial stress
+c      dsdeEl   (dp,ar(6,6),l)            elastic moduli
+c      sigDev   (dp,ar(6  ),l)            deviatoric stress tensor
+c      dfds     (dp,ar(6  ),l)            derivative of the yield function 
+c      JM       (dp,ar(6,6),l)            2D matrix for a 4 order tensor
+c      pEl      (dp,sc     ,l)            hydrostatic pressure stress
+c      qEl      (dp,sc     ,l)            von-mises stress
+c      pleq_t   (dp,sc     ,l)            equivalent plastic strain at beginnig of time increment
+c      pleq     (dp,sc     ,l)            equivalent plastic strain at end of time increment
+c      dpleq    (dp,sc     ,l)            incremental equivalent plastic strain
+c      sigy_t   (dp,sc     ,l)            yield stress at beginnig of time increments
+c      sigy     (dp,sc     ,l)            yield stress at end of time increment
+c      young    (dp,sc     ,l)            Young's modulus
+c      posn     (dp,sc     ,l)            Poiss's ratio
+c      sigy0    (dp,sc     ,l)            initial yield stress
+c      dsigdep  (dp,sc     ,l)            plastic slop
+c      twoG     (dp,sc     ,l)            two time of shear moduli
+c
+c
+      DOUBLE PRECISION sigElp(mcomp), dsdeEl(mcomp,mcomp)
+
+      DOUBLE PRECISION var0, var1, var2, var3, var4, var5,
+     &                 var6, var7
+
+      DOUBLE PRECISION qEl,   pleq_t,  sigy_t , sigy,
+     &                 dpleq, pleq,    signTens,
+     &                 young, posn,    sigy0,   dsigdep, 
+     &                 twoG,  fratio, prpr
+      return
+      end
 *deck,usermatbm    USERDISTRIB  parallel                                gal
       subroutine usermatbm(
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
@@ -1406,3 +1335,74 @@ c
 
       return
       end
+            SUBROUTINE obrat(N,A,C)
+            ! input ...
+            ! a(n,n) - array of coefficients for matrix A
+            ! n      - dimension
+            ! output ...
+            ! c(n,n) - inverse matrix of A
+            ! comments ...
+            ! the original matrix a(n,n) will be destroyed 
+            ! during the calculation
+            !===========================================================
+            implicit none 
+            integer n
+            double precision A(n,n), C(n,n), OOO(n,2*n), lkl(n,2*n) 
+            double precision ll,tt, gaus(n,2*n)
+            integer i, j, pp, kk, kl
+                  gaus = 0.0d0
+                  do i = 1, N
+                      do j = 1, N
+                          gaus(i,j) = A(i,j)
+                      end do
+                  end do
+                  do i=1, N
+                      gaus(i,i+N) = 1.0d0
+                  end do
+                  OOO = gaus
+                  do i = 1,N
+                      lkl = OOO
+                      kl = i+1
+                      If(OOO(i,i).EQ.0.0d0) then
+                          do while (OOO(i,i).EQ.0.0d0)
+                              kl = kl
+                          do j = 1, 2*N
+                              OOO(i,j) = lkl(kl,j)
+                              OOO(kl,j) = lkl(i,j)
+                          end do
+                          If(OOO(i,i).EQ.0.0d0) then
+                              OOO = lkl
+                          end if    
+                          kl = kl +1
+                          end do
+                      end if    
+                      tt = OOO(i,i)
+                      do pp = 1, 2*N
+                         OOO(i,pp) = OOO(i,pp)/tt 
+                      end do   
+                      do kk = 1,N-i
+                          ll = OOO(kk+i,i)
+                          do j = 1,2*N
+                              OOO(kk+i,j) = OOO(kk+i,j)-OOO(i,j)*ll
+                          end do
+                      end do
+                  end do   
+c          
+                  do i = -N,-1
+                      tt = OOO(-i,-i)
+                      do pp = 1, 2*N
+                         OOO(-i,pp) = OOO(-i,pp)/tt 
+                      end do   
+                      do kk = i+1, -1
+                          ll = OOO(-kk,-i)
+                          do j = 1,2*N
+                              OOO(-kk,j) = OOO(-kk,j)-OOO(-i,j)*ll
+                          end do
+                      end do
+                  end do   
+                  do i=1,N
+                      do j=1,N
+                          C(i,j) = OOO(i,j+N)
+                      end do
+                  end do    
+            end subroutine obrat
