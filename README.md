@@ -1,29 +1,25 @@
-# ANSYS-USERMAT-CMSG
-The conventional theory of mechanism-based strain gradient plasticity is realized via ANSYS user programmable features for USERMAT subroutine.   
-Strain gradient plasticity is a theory of continuum solid mechanics which aims at modeling the irreversible mechanical behavior of materials, with specific focus on metals and on their response at appropriately small size, typically on the order of micrometers or less. For small scale, a variation in size leads to a peculiar effect, denoted as “smaller being stronger.” At the crack tip, taking into account gradient plasticity leads to a significant increase of stresses.
+# ANSYS-USERMAT-LEMAITRE
+The Lemaitre damage model with combined hardening is implemented using ANSYS user-programmable features within the USERMAT subroutine.
+The Lemaitre damage model is a continuum damage mechanics approach that characterizes the progressive degradation of material stiffness due to microstructural deterioration. This model is particularly effective for predicting the onset and evolution of damage in metals under complex loading conditions. The incorporation of a combined isotropic-kinematic hardening law allows for accurate modeling of the cyclic plasticity and ratcheting effects observed in real materials. By accounting for damage accumulation, the model enhances the prediction of material durability and failure under fatigue and monotonic loading scenarios.
 
 <center>
 
-<img src="Images\Crack tip stress.png" width="600" alt="Crack tip stress"> 
+![image](https://github.com/user-attachments/assets/0239e339-26d3-4ccf-a9c3-d245d879b33a)
+Distribution of damage parameter depending on the displacement of the upper edge of the specimen
 
 </center>
 
 <br>
 
- In source files you can find a APDL script example for 2D cracked body. After compiling and attaching present dynamic link library as ANSYS user material copy and run [this file](https://github.com/Andrey-Fog/ANSYS-USERMAT-CMSG/blob/main/Source/APDL-%202D%20crack%20example.txt) from ANSYS Mechanical command line.  
-If you using this code for research or industrial purposes please cite one of the following publications.
-
-<br>
-
  ## Research results and theory  
-- [Crack tip fields and fracture resistance parameters based on strain gradient plasticity](https://doi.org/10.1016/j.ijsolstr.2020.10.015)  
+- [De Souza Neto, E., Peric, D., and Owen, D. ´ Computational Methods for Plasticity: Theory and Applications. Wiley, 2008.](http://dx.doi.org/10.1002/9780470694626)  
 
-- [Mode I and mode II stress intensity factors and dislocation density behaviour in strain gradient plasticity](https://doi.org/10.1016/j.tafmec.2021.103128)
+- [Robert Lee Gates. A Finite Element Implementation of a Ductile. Bachelor Thesis. Gottfried Wilhelm Leibniz University Hannover. 2012.](https://arxiv.org/pdf/1302.2439)
 
-- [Inversion of dislocation densities under mixed mode fracture](https://doi.org/10.1016/j.engfailanal.2022.106311)
+- [Lemaitre J. A continuous damage mechanics model for ductile fracture. J Eng Mater Technol. 1985;107:83. ](http://dx.doi.org/10.1115/1.3225775)
 
 ## Acknowledgment
-I want to say thank a lot to [Emilio Martínez Pañeda](https://www.empaneda.com/) for the detailed presentation of his methods in open acsess and active assistance. This helped a lot in the implementation of CMSG theory into ANSYS. This project is reworked his ABAQUS subroutine described [here](https://doi.org/10.1016/j.ijsolstr.2015.02.010). 
+I want to say thank a lot to Robert Lee Gates for the detailed presentation of his methods in open acsess and active assistance. This helped a lot in the implementation of Lemaitre Model into ANSYS. This project is reworked his ABAQUS subroutine described [here](https://arxiv.org/pdf/1302.2439). 
 
 
 <br>
@@ -87,15 +83,15 @@ And add cells. There should be 6 properties in total. Of which:
 |  C1 |  -  |Young modulus                          |
 |  C2 |  -  |Puasson ratio                          |
 |  C3 |  -  |Yelding stress                         | 
-|  C4 |  -  |Intrinsic material length              |  
-|  C5 |  -  |Strain hardening exponent (0 < N < 1)  |
-|  C6 |  -  |flag, 0 or 1. [Usually](https://doi.org/10.1016/S1359-6454(99)00020-8) 1 for metals|
-|  C7 |  -  |Young modulus                          |
-|  C8 |  -  |Puasson ratio                          |
-|  C9 |  -  |Yelding stress                         | 
-| C10 |  -  |Intrinsic material length              |  
-| C11 |  -  |Strain hardening exponent (0 < N < 1)  |
-| C12 |  -  |flag, 0 or 1. [Usually](https://doi.org/10.1016/S1359-6454(99)00020-8) 1 for metals|
+|  C4 |  -  |Damage law constant                    |  
+|  C5 |  -  |Damage law constant                    |
+|  C6 |  -  |Isotropic hardening constant           |
+|  C7 |  -  |Isotropic hardening constant           |
+|  C8 |  -  |Kinematic hardening constant           |
+|  C9 |  -  |Kinematic hardening constant           | 
+| C10 |  -  |Isotropic hardening constant           |  
+| C11 |  -  |Multiaxial function const              |
+| C12 |  -  |Multiaxial function power              |
 
 In command line it will be looks like present bellow
 
@@ -106,17 +102,29 @@ In command line it will be looks like present bellow
 >nu	= 0.3  
 >!* Yield Strength  
 >S02	= 300  
->!* Length parameter in the CMSG model (approximate order 1e-6 meters)  
->Leng 	= 1E-6  
->!* Strain hardering exponent (0 < N < 1)  
->SHE	= 0.15  
->!* Flag  0 or 1. Usually 1 for metals  
->Flag 	= 1
+>!* Damage law constant  
+>r 	= 3.5 
+>!* Damage law constant 
+>s	= 1
+>!* Isotropic hardening constant  
+>Rinf 	= 3300  
+>!* Isotropic hardening constant
+>gamma	= 0.4
+>!* Kinematic hardening constant  
+>a 	= 2500  
+>!* Kinematic hardening constant
+>b	= 20
+>!* Isotropic hardening constant
+>R0	= 0.001
+>!* Multiaxial function const 
+>Nlconst	= 1
+>!* Multiaxial function power
+>Nlpower	= 1
 >     
 >!* add user model  
 >TB,USER,1,1,12,  
 >TBTEMP,0  
->TBDATA,,Young,nu,S02,Leng,SHE,Flag  
+>TBDATA,,Young,nu,S02,r,s,Rinf, gamma, a, b, R0, Nlconst, Nlpower  
 
 **5. Add 13 state variables**  
 
@@ -124,17 +132,17 @@ In command line it will be looks like present bellow
 
 | SVAR| Value                                 |
 | --- | ------------------------------------- |
-|  1  | equivalent plastic strain at end of time increment    |
-| 2-7 | Plastic strain vector            |
-|  8  | Damage parameter                       |
-|  9  | Von-mises stress  |
-|  10 | Equivalent elastic stress  |
-|  11-17 | Backstress vector       |
-|  12 | Total density of dislocations         |
+|  1     | equivalent plastic strain at end of time increment    |
+| 2-7    | Plastic strain vector                                 |
+|  8     | Damage parameter                                      |
+|  9     | Von-mises stress                                      |
+|  10    | Equivalent elastic stress                             |
+|  11-17 | Backstress vector                                     |
+|  18-20 | additional variables                                  |
 
 APDL script for preprocessor section
 
->TB,STAT,1,1,13,  
+>TB,STAT,1,1,20,  
 >TBTEMP,0  
 >TBDATA,,0,0,0,0,0,0  
 >TBDATA,,0,0,0,0,0,0  
