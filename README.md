@@ -5,10 +5,10 @@ The Lemaitre damage model is a continuum damage mechanics approach that characte
 <center>
 
 ![image](https://github.com/user-attachments/assets/0239e339-26d3-4ccf-a9c3-d245d879b33a)
-Distribution of damage parameter depending on the displacement of the upper edge of the specimen
+
 
 </center>
-
+<b>Distribution of damage parameter depending on the displacement of the upper edge of the specimen</b>
 <br>
 
  ## Research results and theory  
