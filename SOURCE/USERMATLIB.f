@@ -11,11 +11,15 @@
      &                   cutFactor, pVolDer, hrmflg, var3, var4,
      &                   var5, var6, var7)
 c*************************************************************************
-с     If you using this code for research or industrial purposes please cite:
-с           Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
-с           "Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
+c     If you using this code for research or industrial purposes please cite:
+c          Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
+c               "Numerical and experimental methods for determining the parameters of generalized models of a 
+c                       damaged visco-plastic medium in durability prediction"
+c                                   https://doi.org/10.15593/perm.mech/2024.5.10
+c
 c     Preprocessor definitions for intel fortran compiler:
-c      /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 è YES
+c      /DNOSTDCALL /DARGTRAIL /DPCWIN64_SYS /DPCWINX64_SYS /DPCWINNT_SYS /DCADOE_ANSYS /D__EFL /DFORTRAN 
+c      /fpp /4Yportlib /auto /c /Fo.\ /MD /W0 è YES
 c
 c      Attention:
 c           User must define material constitutive law properly
@@ -46,20 +50,18 @@ c
      &                 defGrad (3,3),     defGrad_t(3,3),
      &                 tsstif  (2)
       DOUBLE PRECISION hrmflg
-c
-      EXTERNAL         usermat3d, usermatps, usermatbm, usermat1d
-c      EXTERNAL         usermat_harm
 
       DOUBLE PRECISION var0, var1, var2, var3, var4, var5,
      &                 var6, var7
       data             var1/0.0d0/
       data             var2/0.0d0/
-
+c
+      EXTERNAL         usermat3d, usermatps, usermatbm, usermat1d
     
 c ***    time domain analysis
 
       IF(ncomp .GE. 4) THEN
-c ***    3d, plane strain and axisymmetric example
+c ***    3d, plane strain and axisymmetric 
          call usermat3d (
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
      &                   ldstep,isubst,keycut,
@@ -73,7 +75,7 @@ c ***    3d, plane strain and axisymmetric example
      &                   var6, var7)
 
       ELSE IF(nDirect.eq. 2 .and. ncomp .EQ. 3) THEN
-c ***    plane stress example
+c ***    plane stress 
          call usermatps (
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
      &                   ldstep,isubst,keycut,
@@ -87,7 +89,7 @@ c ***    plane stress example
      &                   var6, var7)
 
       ELSE IF(ncomp .EQ. 3) THEN
-c ***    3d beam example
+c ***    3d beam 
          call usermatbm (
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
      &                   ldstep,isubst,keycut,
@@ -101,7 +103,7 @@ c ***    3d beam example
      &                   var6, var7)
 
       ELSE IF(ncomp .EQ. 1) THEN
-c ***    1d beam example
+c ***    1d beam 
          call usermat1d (
      &                   matId, elemId,kDomIntPt, kLayer, kSectPt,
      &                   ldstep,isubst,keycut,
@@ -257,7 +259,7 @@ cc
      &                 tsstif  (2), llll(ncomp),
      &                 dsdePl1  (2*ncomp+2,2*ncomp+2)         
 c
-c***************** User defined part *************************************
+c***************** Below is a user defined part *************************************
 c
 c --- parameters
 c
@@ -304,7 +306,7 @@ c      gamma    (dp,sc     ,l)            hardening constant
 c      Rinf     (dp,sc     ,l)            hardening constant
 c      K        (dp,sc     ,l)            bulk modulus
 c      GG       (dp,sc     ,l)            shear modulus
-c      w        (dp,sc     ,l)            Damage
+c      w        (dp,sc     ,l)            Damage variable
 c      R        (dp,sc     ,l)            equivalent plastic strain
 c      sigeqv   (dp,sc     ,l)            equivalent elastic stress
 c      epseqv   (dp,sc     ,l)            equivalent strian
@@ -313,10 +315,7 @@ c      f1, f2, x, x1, x2, sch (dp,sc     ,l)            variables used to determ
 c      eps      (dp,sc     ,l)            iteration precision
 c      dsdePl   (dp,ar(ncomp,ncomp),io)                            material jacobian matrix
 c      
-c      
-c --- temperary variables for solution purpose
-c      i, j
-c      threeOv2qEl, oneOv3G, qElOv3G, con1, con2, fratio
+
       EXTERNAL         vzero, vmove, get_ElmData, egen
       double precision egen
       DOUBLE PRECISION sigElp(mcomp), Strainob(mcomp), epsDev(mcomp),
@@ -388,31 +387,26 @@ c *** material parameters
       posn     = prop(2)
 c *** initial yield stress     
       sigy0    = prop(3)
-c *** isotropic hardening     
-      rr       = prop(4)   
-c *** isotropic hardening     
+c *** damage. Lemaitre law     
+      rr       = prop(4)       
       s        = prop(5)   
-c *** isotropic hardening     
-      Rinf     = prop(6)   
-c *** isotropic hardening     
-      gamma    = prop(7)
-c *** kinematic hardening
-      aaa      = prop(8)
-c *** kinematic hardening
-      bbb      = prop(9) 
-      Rconst   = prop(10)
-c *** Multiaxial flag, if zero Rv=1
+c *** isotropic hardening. Voce law  
+      Rconst   = prop(6)   
+      Rinf     = prop(7)       
+      gamma    = prop(8)
+c *** kinematic hardening. Chaboche law
+      aaa      = prop(9)
+      bbb      = prop(10) 
+
+c *** Multiaxial flag, if zero multiaxial function not affect
       incRev    = 1
-c *** Multiaxial function const 
+c *** Multiaxial function. Bai-Wierzbicki 
       NLCnst    = prop(11)
-c *** Multiaxial function power
       NLPwr    = prop(12)
 c
 c     Limit surface, default eq to 1  
       LimSurfVal=1
-
-      
-
+ 
       kkk = CEILING(Time)
       if (MOD(CEILING(TIME),2).EQ.0) then
 c          aaa = -aaa
@@ -549,7 +543,7 @@ c     multuaxial state
 c     yeld surface radius
       sigy0 = sigy0/LimSurfVal
 c
-c *** elastic trial true stress
+c *** elastic trial stress
       sigElp_tr  = sigElp
 c      
       If  (ncomp .EQ. 4) then
@@ -558,7 +552,7 @@ c
       end if
 c *** true hydrostatic pressure trial stress
       pEl = THIRD * (sigElp_tr(1) + sigElp_tr(2) + sigElp_tr(3))
-c *** compute the true deviatoric trial stress tensor
+c *** compute the deviatoric trial stress tensor
       sigDev = sigElp_tr - pEl*Ii
 c *** compute relative trial stress
       rel_tr = sigDev - beta0
@@ -566,7 +560,7 @@ c *** compute relative trial stress
           rel_tr(5) = 0
           rel_tr(6) = 0 
       end if
-c *** compute trial von-mises and equivalent elastic true stress    
+c *** compute trial von-mises and equivalent elastic stress    
       J2_tr = sum(rel_tr**2*PhysToEn) / 2  
       q_tr = sqrt(3.0d0*J2_tr)   
 c *** compute yield stress
@@ -583,7 +577,7 @@ c ******* inital guess for the system variables
               sigg(6) = 0                       
           end if         
           beta = beta0
-c ******* inverse tangent
+c ******* inverse tangent matrix
           maxiter2 = 500
           plasticMult = zero
           norm_A = 1
