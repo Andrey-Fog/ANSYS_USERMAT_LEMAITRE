@@ -8,18 +8,20 @@ The Lemaitre damage model is a continuum damage mechanics approach that characte
 
 
 </center>
-<b>Distribution of damage parameter depending on the displacement of the upper edge of the specimen</b>
+<b>Distribution of damage parameter depending on the displacement of the upper edge of the 3D specimen</b>
 <br>
 
  ## Research results and theory  
+- [Lemaitre J. A continuous damage mechanics model for ductile fracture. J Eng Mater Technol. 1985;107:83. ](http://dx.doi.org/10.1115/1.3225775)
+
 - [De Souza Neto, E., Peric, D., and Owen, D. ´ Computational Methods for Plasticity: Theory and Applications. Wiley, 2008.](http://dx.doi.org/10.1002/9780470694626)  
 
 - [Robert Lee Gates. A Finite Element Implementation of a Ductile. Bachelor Thesis. Gottfried Wilhelm Leibniz University Hannover. 2012.](https://arxiv.org/pdf/1302.2439)
 
-- [Lemaitre J. A continuous damage mechanics model for ductile fracture. J Eng Mater Technol. 1985;107:83. ](http://dx.doi.org/10.1115/1.3225775)
+
 
 ## Acknowledgment
-I want to say thank a lot to Robert Lee Gates for the detailed presentation of his methods in open acsess and active assistance. This helped a lot in the implementation of Lemaitre Model into ANSYS. This project is reworked his ABAQUS subroutine described [here](https://arxiv.org/pdf/1302.2439). 
+This project was made possible thanks to the support of Russian Science Foundation (Project №  [24-29-00475](https://rscf.ru/en/project/24-29-00475/))
 
 
 <br>
@@ -78,24 +80,24 @@ User link path <ANS_USER_PATH>: *path to your folder*"
 
 And add cells. There should be 6 properties in total. Of which:
 
-| NN  |     | Property                              |
-| --- | --- | ------------------------------------  |
-|  C1 |  -  |Young modulus                          |
-|  C2 |  -  |Puasson ratio                          |
+| NN  |     | Property                              | 
+| --- | --- | ------------------------------------  | 
+|  C1 |  -  |Young modulus                          | 
+|  C2 |  -  |Puasson ratio                          | 
 |  C3 |  -  |Yelding stress                         | 
-|  C4 |  -  |Damage law constant                    |  
-|  C5 |  -  |Damage law constant                    |
-|  C6 |  -  |Isotropic hardening constant           |
-|  C7 |  -  |Isotropic hardening constant           |
-|  C8 |  -  |Kinematic hardening constant           |
+|  C4 |  -  |Damage law constant                    | 
+|  C5 |  -  |Damage law constant                    | 
+|  C6 |  -  |Isotropic hardening constant           | 
+|  C7 |  -  |Isotropic hardening constant           | 
+|  C8 |  -  |Kinematic hardening constant           | 
 |  C9 |  -  |Kinematic hardening constant           | 
-| C10 |  -  |Isotropic hardening constant           |  
-| C11 |  -  |Multiaxial function const              |
-| C12 |  -  |Multiaxial function power              |
+| C10 |  -  |Isotropic hardening constant           | 
+| C11 |  -  |Multiaxial function const              | 
+| C12 |  -  |Multiaxial function power              | 
 
 In command line it will be looks like present bellow
 
->!* Define parameters related to CMSG model  
+>!* Define parameters related to generalised model  
 >!* Modulus of Elasticity  
 >Young	= 200000   
 >!* Poisson ratio  
@@ -103,27 +105,27 @@ In command line it will be looks like present bellow
 >!* Yield Strength  
 >S02	= 300  
 >!* Damage law constant  
->r 	= 3.5 
->!* Damage law constant 
->s	= 1
+>r 	= 3.5  
+>!* Damage law constant  
+>s	= 1  
 >!* Isotropic hardening constant  
 >Rinf 	= 3300  
->!* Isotropic hardening constant
->gamma	= 0.4
+>!* Isotropic hardening constant  
+>gamma	= 0.4  
+>!* Kinematic hardening constant   
+>a 	= 2500   
 >!* Kinematic hardening constant  
->a 	= 2500  
->!* Kinematic hardening constant
->b	= 20
->!* Isotropic hardening constant
->R0	= 0.001
->!* Multiaxial function const 
->Nlconst	= 1
->!* Multiaxial function power
->Nlpower	= 1
+>b	= 20  
+>!* Isotropic hardening constant  
+>R0	= 0.001  
+>!* Multiaxial function const   
+>Nlconst	= 1  
+>!* Multiaxial function power  
+>Nlpower	= 1  
 >     
->!* add user model  
->TB,USER,1,1,12,  
->TBTEMP,0  
+>!* add user model   
+>TB,USER,1,1,12,   
+>TBTEMP,0   
 >TBDATA,,Young,nu,S02,r,s,Rinf, gamma, a, b, R0, Nlconst, Nlpower  
 
 **5. Add 13 state variables**  
