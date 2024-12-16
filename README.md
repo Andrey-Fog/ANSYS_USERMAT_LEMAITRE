@@ -15,7 +15,7 @@ If you using this code for research or industrial purposes please cite:
 
 Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
 "Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
-https://doi.org/10.15593/perm.mech/2024.5.10
+[DOI:10.15593/perm.mech/2024.5.10](https://doi.org/10.15593/perm.mech/2024.5.10)
 
  ## Extended theory  
 - [Lemaitre J. (1985) "A continuous damage mechanics model for ductile fracture"](http://dx.doi.org/10.1115/1.3225775)
