@@ -10,13 +10,19 @@ The Lemaitre damage model is a continuum damage mechanics approach that characte
 </center>
 <b>Distribution of damage parameter depending on the displacement of the upper edge of the 3D specimen</b>
 <br>
+<br>
+If you using this code for research or industrial purposes please cite:   
 
- ## Research results and theory  
-- [Lemaitre J. A continuous damage mechanics model for ductile fracture. J Eng Mater Technol. 1985;107:83. ](http://dx.doi.org/10.1115/1.3225775)
+Tumanov A.V., Kosov D.A., Fedorenkov D.I. 
+"Numerical and experimental methods for determining the parameters of generalized models of a damaged visco-plastic medium in durability prediction"
+https://doi.org/10.15593/perm.mech/2024.5.10
 
-- [De Souza Neto, E., Peric, D., and Owen, D. ´ Computational Methods for Plasticity: Theory and Applications. Wiley, 2008.](http://dx.doi.org/10.1002/9780470694626)  
+ ## Extended theory  
+- [Lemaitre J. (1985) "A continuous damage mechanics model for ductile fracture"](http://dx.doi.org/10.1115/1.3225775)
 
-- [Robert Lee Gates. A Finite Element Implementation of a Ductile. Bachelor Thesis. Gottfried Wilhelm Leibniz University Hannover. 2012.](https://arxiv.org/pdf/1302.2439)
+- [De Souza Neto, E., Peric, D., and Owen, D. (2008) "Computational Methods for Plasticity: Theory and Applications"](http://dx.doi.org/10.1002/9780470694626)  
+
+- [Robert Lee Gates (2018) "A Finite Element Implementation of a Ductile"](https://arxiv.org/pdf/1302.2439)
 
 
 
@@ -62,9 +68,9 @@ On the tab, click on the button:
    
 If everything is connected correctly in the ANSYS output window at startup there will be a line 
 
-```
-User link path <ANS_USER_PATH>: *path to your folder*" 
-```
+
+>User link path <ANS_USER_PATH>: *path to your folder*" 
+
 <br>
 
 **3. After launching the ANSYS, create an user material**
