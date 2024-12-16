@@ -20,7 +20,7 @@ https://doi.org/10.15593/perm.mech/2024.5.10
  ## Extended theory  
 - [Lemaitre J. (1985) "A continuous damage mechanics model for ductile fracture"](http://dx.doi.org/10.1115/1.3225775)
 
-- [De Souza Neto, E., Peric, D., and Owen, D. (2008) "Computational Methods for Plasticity: Theory and Applications"](http://dx.doi.org/10.1002/9780470694626)  
+- [De Souza Neto E., Peric D. and Owen D. (2008) "Computational Methods for Plasticity: Theory and Applications"](http://dx.doi.org/10.1002/9780470694626)  
 
 - [Robert Lee Gates (2018) "A Finite Element Implementation of a Ductile"](https://arxiv.org/pdf/1302.2439)
 
