@@ -89,50 +89,46 @@ And add cells. There should be 6 properties in total. Of which:
 |  C5 |  -  |Damage law constant                    | 
 |  C6 |  -  |Isotropic hardening constant           | 
 |  C7 |  -  |Isotropic hardening constant           | 
-|  C8 |  -  |Kinematic hardening constant           | 
+|  C8 |  -  |Isotropic hardening constant           | 
 |  C9 |  -  |Kinematic hardening constant           | 
-| C10 |  -  |Isotropic hardening constant           | 
+| C10 |  -  |Kinematic hardening constant           | 
 | C11 |  -  |Multiaxial function const              | 
 | C12 |  -  |Multiaxial function power              | 
 
 In command line it will be looks like present bellow
-
->!* Define parameters related to generalised model  
->!* Modulus of Elasticity  
->Young	= 200000   
->!* Poisson ratio  
->nu	= 0.3  
->!* Yield Strength  
->S02	= 300  
->!* Damage law constant  
->r 	= 3.5  
->!* Damage law constant  
->s	= 1  
->!* Isotropic hardening constant  
->Rinf 	= 3300  
->!* Isotropic hardening constant  
->gamma	= 0.4  
->!* Kinematic hardening constant   
->a 	= 2500   
->!* Kinematic hardening constant  
->b	= 20  
->!* Isotropic hardening constant  
->R0	= 0.001  
->!* Multiaxial function const   
->Nlconst	= 1  
->!* Multiaxial function power  
->Nlpower	= 1  
->     
->!* add user model   
->TB,USER,1,1,12,   
->TBTEMP,0   
->TBDATA,,Young,nu,S02,r,s,Rinf, gamma, a, b, R0, Nlconst, Nlpower  
-
-**5. Add 13 state variables**  
+```
+!*** Define parameters related to generalised model  
+!* Modulus of Elasticity  
+Young	= 200000   
+!* Poisson ratio  
+nu	= 0.3  
+!* Yield Strength  
+S02	= 300  
+!* Damage law constants  
+r 	= 3.5   
+s	= 1  
+!* Isotropic hardening constants  
+R0	= 0.001  
+Rinf 	= 3300  
+gamma	= 0.4  
+!* Kinematic hardening constant   
+a 	= 2500   
+b	= 20   
+!* Multiaxial function const   
+Nlconst	= 1    
+Nlpower	= 1 
+    
+!*** add user model   
+TB,USER,1,1,12,   
+TBTEMP,0   
+TBDATA,,Young, nu, S02, r, s, R0  
+TBDATA,,Rinf, gamma, a, b,  Nlconst, Nlpower
+```
+**5. Add 20 state variables**  
 
 *Preprocessor->Material Props->Material models->Structural->Specialized Materials->User material options->State Variables*
 
-| SVAR| Value                                 |
+| SVAR| Storing value                                 |
 | --- | ------------------------------------- |
 |  1     | equivalent plastic strain at end of time increment    |
 | 2-7    | Plastic strain vector                                 |
@@ -142,17 +138,18 @@ In command line it will be looks like present bellow
 |  11-17 | Backstress vector                                     |
 |  18-20 | additional variables                                  |
 
-APDL script for preprocessor section
-
->TB,STAT,1,1,20,  
->TBTEMP,0  
->TBDATA,,0,0,0,0,0,0  
->TBDATA,,0,0,0,0,0,0  
->TBDATA,,0  
-
+Or use this APDL script in preprocessor section
+```
+TB,STAT,1,1,20,  
+TBTEMP,0  
+TBDATA,,0,0,0,0,0,0  
+TBDATA,,0,0,0,0,0,0  
+TBDATA,,0,0,0,0,0,0   
+TBDATA,,0,0  
+```
 **6. Access to user variable arrays**
 
-Before starting on the solution in the solver (/SOL) in the command line of ANSYS, write the line:
+Before starting of the solution, in the solver section (/SOL) write the line:
 
 - to save every substeps results  
 > OUTRES,SVAR,ALL
