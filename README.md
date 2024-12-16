@@ -1,6 +1,6 @@
 # ANSYS-USERMAT-LEMAITRE
 The Lemaitre damage model with combined hardening is implemented using ANSYS user-programmable features within the USERMAT subroutine.
-The Lemaitre damage model is a continuum damage mechanics approach that characterizes the progressive degradation of material stiffness due to microstructural deterioration. This model is particularly effective for predicting the onset and evolution of damage in metals under complex loading conditions. The incorporation of a combined isotropic-kinematic hardening law allows for accurate modeling of the cyclic plasticity and ratcheting effects observed in real materials. By accounting for damage accumulation, the model enhances the prediction of material durability and failure under fatigue and monotonic loading scenarios.
+The Lemaitre damage model is a continuum damage mechanics approach that characterizes the progressive degradation of material stiffness due to microstructural deterioration. This model is particularly effective for predicting the initiation and evolution of damage in metals under complex loading conditions. The incorporation of a combined isotropic-kinematic hardening law allows for modeling of the cyclic plasticity and ratcheting effects observed in real materials. By accounting for damage accumulation, the model enhances the prediction of material durability and failure under fatigue and monotonic loading scenarios.
 
 <center>
 
